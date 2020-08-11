@@ -1,5 +1,5 @@
 ## Retrieve data from SRA
-#### For each dataset (project), a table named "SraRunInfo.csv" were downloaded from SRA.
+#### For each dataset (project), a table named "SraRunInfo.csv" was downloaded from SRA.
 #### 
 ```bash
 RAWPATH="path_to_raw_fg.gz" ## directory for raw data, according to ENV
@@ -53,33 +53,6 @@ java -jar ${SOFTPATH}/trimmomatic-0.38.jar SE -threads 4 \
     ${CLEANPATH}/${SRA}.trimmed.fastq.gz \
     ILLUMINACLIP:${SOFTPATH}/adapters/TruSeq3-SE.fa:2:30:10 \
     LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:25
-
-## other platform, PAIRED END
-fastp \
-    --qualified_quality_phred 15 \
-    --unqualified_percent_limit 40 \
-    --length_required 25 \
-    --detect_adapter_for_pe \
-    --cut_by_quality5 3 \
-    --cut_by_quality3 3 \
-    --cut_window_size 4 \
-    --cut_mean_quality 15 \
-    -i ${RAWPATH}/${SRA}_1.fastq.gz \
-    -I ${RAWPATH}/${SRA}_2.fastq.gz \
-    -o ${CLEANPATH}/${SRA}.trimmed_1P.fastq.gz \
-    -O ${CLEANPATH}/${SRA}.trimmed_2P.fastq.gz
-
-## other platform, SINGLE END
-fastp \
-    --qualified_quality_phred 15 \
-    --unqualified_percent_limit 40 \
-    --length_required 25 \
-    --cut_by_quality5 3 \
-    --cut_by_quality3 3 \
-    --cut_window_size 4 \
-    --cut_mean_quality 15 \
-    -i ${RAWPATH}/${SRA}.fastq.gz \
-    -o ${CLEANPATH}/${SRA}.trimmed.fastq.gz
 ```
 
 ## Align
@@ -161,8 +134,8 @@ filtered_SJs <- "HomSap_filtered_SJs.tsv" ## SJs for calculate PSI
 
 res <- 
     multi_merge(
-        path = ,
-        pattern = raw_SJs_path,
+        path = raw_SJs_path,
+        pattern = ".SJ.out.tab",
         minSJ = 10,
         minSJs = 100,
         minSamps = 2,
