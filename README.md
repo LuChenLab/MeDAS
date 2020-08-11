@@ -1,6 +1,8 @@
+# MeDAS: a database for metazoan alternative splicing events across developmental stages
+This repository contains the pipeline for exonic PSI used in MeDAS.
+
 ## Retrieve data from SRA
-#### For each dataset (project), a table named "SraRunInfo.csv" was downloaded from SRA.
-#### 
+For each dataset (project), a table named "SraRunInfo.csv" was downloaded from SRA.
 ```bash
 RAWPATH="path_to_raw_fg.gz" ## directory for raw data, according to ENV
 
@@ -20,7 +22,7 @@ ls *fastq | xargs -i -P 10 bash -c "echo {};gzip {}"
 ```
 
 ## QC
-#### quality control, trimmomatic
+Trimmomatic
 ```bash
 SOFTPATH="path_to_trimmomatic-0.38" ## according to ENV
 CLEANPATH="path_to_clean_fg.gz" ## according to ENV
@@ -56,6 +58,7 @@ java -jar ${SOFTPATH}/trimmomatic-0.38.jar SE -threads 4 \
 ```
 
 ## Align
+STAR
 ```bash
 STARINDEX="path_to_STAR_index" ## according to ENV
 STAROUT="path_to_star_outdir" ## according to ENV
@@ -86,6 +89,7 @@ STAR --runThreadN 8 \
 ```
 
 ## Infer experiment
+RSeQC
 ```bash
 BED12="path_to_bed12" ## bed12 file of corresponding annotation
 
@@ -96,6 +100,7 @@ infer_experiment.py \
 ```
 
 ## Quantify
+RSEM
 ```bash
 RSEMINDEX="path_to_RSEM_index" ## index of RSEM
 STRAND="none_reverse_or_forward" ## strand-specificity of library, accroding to result of infer experiment
@@ -125,9 +130,9 @@ rsem-calculate-expression \
 ```
 
 ## Filter SJ
-#### exclude low reliable SJs
 ```R
 ## R
+## exclude low reliable SJs
 source("./Rscripts/filter_SJs.R")
 raw_SJs_path <- "path_to_HomSap" ## STAR output directory for a species, STAROUT
 filtered_SJs <- "HomSap_filtered_SJs.tsv" ## SJs for calculate PSI
@@ -146,25 +151,26 @@ res <-
   
 fwrite(res, filtered_SJs, sep = "\t", row.names = F, col.names = F)
 ```
-#### generate new SJ.out.tab of filtered SJs 
 ```bash
+## bash
+## generate new SJ.out.tab of filtered SJs 
 ## for HomSap
 FILTEREDSJ="path_to_filtered_SJ_tabs"
 grep -F -f HomSap_filtered_SJs.tsv ${STAROUT}/${SRA}.SJ.out.tab > ${FILTEREDSJ}/${SRA}.SJ.out.tab
 ```
 
 ## Calculate PSI of exonic part
-#### prepare exonic part gff
+DEXseq, bedtools
 ```bash
+## prepare exonic part gff
 python2 path/to/dexseq_prepare_annotation.py path/to/HomSap.gtf HomSap.reduce.gtf
 
 awk '{OFS="\t"}{if ($3 == "exonic_part") print $1,$2,$3,$4,$5,$6,$7,$8,$14":"$12}' HomSap.reduce.gtf | \
     sed 's=[";]==g' | \
     sort -k1,1 -k2,2n > HomSap_Exonic_part.gff
 ```
-
-#### call PSI
 ```bash
+## call PSI
 LEN="mapped_reads_length_of_STAR" ## integer
 
 bash path/to/ExonicPartPSI_2.sh \
@@ -186,4 +192,8 @@ bash path/to/ExonicPartPSI_2.sh \
     ${LEN} \
     ${FILTEREDSJ}/${SRA}.SJ.out.tab \
     ${SRA}
+```
+```bash
+## merge PSI outputs
+Rscript ExonicPart_PSI/mergePSI -h
 ```
