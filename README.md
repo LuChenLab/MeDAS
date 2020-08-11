@@ -2,7 +2,7 @@
 #### For each dataset (project), a table named "SraRunInfo.csv" were downloaded from SRA.
 #### 
 ```bash
-RAWPATH="path_to_raw_fg.gz" ## directory for raw data, according ENV
+RAWPATH="path_to_raw_fg.gz" ## directory for raw data, according to ENV
 
 cd ${RAWPATH}
 
@@ -185,14 +185,32 @@ grep -F -f HomSap_filtered_SJs.tsv ${STAROUT}/${SRA}.SJ.out.tab > ${FILTEREDSJ}/
 ```bash
 python2 path/to/dexseq_prepare_annotation.py path/to/HomSap.gtf HomSap.reduce.gtf
 
-awk '{OFS="\t"}{if ($3 == "exonic_part") print $1,$2,$3,$4,$5,$6,$7,$8,$14":"$12}' HomSap.reduce.gtf | sed 's=[";]==g' | sort -k1,1 -k2,2n > HomSap_Exonic_part.gff
+awk '{OFS="\t"}{if ($3 == "exonic_part") print $1,$2,$3,$4,$5,$6,$7,$8,$14":"$12}' HomSap.reduce.gtf | \
+    sed 's=[";]==g' | \
+    sort -k1,1 -k2,2n > HomSap_Exonic_part.gff
 ```
+
 #### call PSI
 ```bash
 LEN="mapped_reads_length_of_STAR" ## integer
-bash path/to/ExonicPartPSI_2.sh path/to/bedtools2.23/bedtools path/to/HomSap_Exonic_part.gff ${SRA}.Aligned.toTranscriptome.out.bam ${LEN} ${FILTEREDSJ}/${SRA}.SJ.out.tab ${SRA}
+
+bash path/to/ExonicPartPSI_2.sh \
+    path/to/bedtools2.23/bedtools \
+    path/to/HomSap_Exonic_part.gff \
+    ${SRA}.Aligned.toTranscriptome.out.bam \
+    ${LEN} \
+    ${FILTEREDSJ}/${SRA}.SJ.out.tab \
+    ${SRA}
 
 ## for Monodelphis domestica (large chromsome size, over 500Mb), needs genome file
 awk '{print $1"\t"$2}' MonDom.fa.fai | sort -k1,1 -k2,2n > MonDom.genome
-bash path/to/ExonicPartPSI_2.sh path/to/bedtools2.23/bedtools path/to/MonDom_Exonic_part.gff MonDom.genome ${SRA}.Aligned.toTranscriptome.out.bam ${LEN} ${FILTEREDSJ}/${SRA}.SJ.out.tab ${SRA}
+
+bash path/to/ExonicPartPSI_2.sh \
+    path/to/bedtools2.23/bedtools \
+    path/to/MonDom_Exonic_part.gff \
+    MonDom.genome \
+    ${SRA}.Aligned.toTranscriptome.out.bam \
+    ${LEN} \
+    ${FILTEREDSJ}/${SRA}.SJ.out.tab \
+    ${SRA}
 ```
