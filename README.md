@@ -1,5 +1,5 @@
 # MeDAS: a database for metazoan alternative splicing events across developmental stages
-This repository contains the pipeline for exonic PSI used in MeDAS.
+This repository contains the pipeline for generating exonic PSI used in MeDAS.
 
 ## Retrieve data from SRA
 For each dataset (project), a table named "SraRunInfo.csv" was downloaded from SRA.
@@ -195,5 +195,5 @@ bash path/to/ExonicPartPSI_2.sh \
 ```
 ```bash
 ## merge PSI outputs
-Rscript ExonicPart_PSI/mergePSI -h
+Rscript ExonicPart_PSI/mergePSI.R -h
 ```
