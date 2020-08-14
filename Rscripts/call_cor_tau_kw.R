@@ -37,9 +37,9 @@ ts_Tau <-
   }
 
 sum_foo_psi <- 
-  function(mat, ## matrix or df, with rownames (ExonicPartName) and colnames (sample ID)
-           colDat, ## metainfo, with rownames (sample ID)
-           col, ## colname of stages, ordered factor
+  function(mat,    ## matrix or df, with rownames (ExonicPartName) and colnames (sample ID)
+           colDat, ## metainfo, with rownames (sample ID), for all samples of specific tissue
+           col,    ## column name of stage-culumn, ordered factor (rank)
            keep = 0.3 ## maximum fraction of NAs to keep when call correlation
   ) {
     require(magrittr)

@@ -1,5 +1,10 @@
-# MeDAS: a database for metazoan alternative splicing events across developmental stages
+# MeDAS: a Metazoan Developmental Alternative Splicing database 
 This repository contains the pipeline for generating exonic PSI used in MeDAS.
+
+![Pipeline used in MeDAS](./doc/MeDAS_pipeline.png =100x120)
+
+## MeDAS URL
+![https://das.chenlulab.com/#/] (https://das.chenlulab.com/#/)
 
 ## Retrieve data from SRA
 For each dataset (project), a table named "SraRunInfo.csv" was downloaded from SRA.
@@ -159,7 +164,7 @@ FILTEREDSJ="path_to_filtered_SJ_tabs"
 grep -F -f HomSap_filtered_SJs.tsv ${STAROUT}/${SRA}.SJ.out.tab > ${FILTEREDSJ}/${SRA}.SJ.out.tab
 ```
 
-## Calculate PSI of exonic part
+## Calculate PSI of exonic parts
 DEXseq, bedtools
 ```bash
 ## prepare exonic part gff
@@ -171,7 +176,7 @@ awk '{OFS="\t"}{if ($3 == "exonic_part") print $1,$2,$3,$4,$5,$6,$7,$8,$14":"$12
 ```
 ```bash
 ## call PSI
-LEN="mapped_reads_length_of_STAR" ## integer
+LEN="mapped_reads_length_from_STAR" ## integer
 
 bash path/to/ExonicPartPSI_2.sh \
     path/to/bedtools2.23/bedtools \
@@ -181,7 +186,7 @@ bash path/to/ExonicPartPSI_2.sh \
     ${FILTEREDSJ}/${SRA}.SJ.out.tab \
     ${SRA}
 
-## for Monodelphis domestica (large chromsome size, over 500Mb), needs genome file
+## for Monodelphis domestica (large chromosome size, over 500Mb), needs genome file
 awk '{print $1"\t"$2}' MonDom.fa.fai | sort -k1,1 -k2,2n > MonDom.genome
 
 bash path/to/ExonicPartPSI_2.sh \
@@ -196,4 +201,34 @@ bash path/to/ExonicPartPSI_2.sh \
 ```bash
 ## merge PSI outputs
 Rscript ExonicPart_PSI/mergePSI.R -h
+```
+
+## Call time course gene expression
+```r
+## R
+## For example
+source("./Rscripts/cpm_maSigPro.R")
+
+gene_res_musmus <- 
+    run_maSigPro(
+        Species = "MusMus",
+        Meta = "all_Meta.tsv",
+        Outpath = "./",
+        Count = "MusMus_Gene_expected_count.tsv",
+        TPM = "MusMus_Gene_TPM.tsv"
+    )
+```
+
+## Call spearman and KW test of PSI
+```r
+## R
+source("./Rscripts/call_cor_tau_kw.R")
+
+psi_res_musmus <-
+    sum_foo_psi(
+        mat,    ## matrix or df, with rownames (ExonicPartName) and colnames (sample ID)
+        colDat, ## metainfo, with rownames (sample ID), for all samples of specific tissue
+        col,    ## column name of stage-culumn, ordered factor (rank)
+        keep = 0.3 ## maximum fraction of NAs to keep when call correlation
+    )
 ```
