@@ -1,10 +1,13 @@
 # MeDAS: a Metazoan Developmental Alternative Splicing database 
 This repository contains the pipeline for generating exonic PSI used in MeDAS.
 
-![Pipeline used in MeDAS](./doc/MeDAS_pipeline.png =100x120)
-
 ## MeDAS URL
-![https://das.chenlulab.com/#/] (https://das.chenlulab.com/#/)
+[MeDAS at https://das.chenlulab.com/#/](https://das.chenlulab.com/#/)
+
+## Pipeline overview
+<center>
+<img src="./doc/MeDAS_pipeline.png" width="75%" height="75%" />
+</center>
 
 ## Retrieve data from SRA
 For each dataset (project), a table named "SraRunInfo.csv" was downloaded from SRA.
