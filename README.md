@@ -222,7 +222,7 @@ gene_res_musmus <-
     )
 ```
 
-## Call spearman and KW test of PSI
+## Call correlation and KW test of PSI
 ```r
 ## R
 source("./Rscripts/call_cor_tau_kw.R")
