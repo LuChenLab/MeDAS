@@ -2,7 +2,7 @@
 This repository contains the pipeline for generating exonic PSI used in MeDAS.
 
 ## MeDAS URL
-[MeDAS at https://das.chenlulab.com/#/](https://das.chenlulab.com/#/)
+[MeDAS at https://das.chenlulab.com](https://das.chenlulab.com)
 
 ## Pipeline overview
 <center>
@@ -206,7 +206,20 @@ bash path/to/ExonicPartPSI_2.sh \
 Rscript ExonicPart_PSI/mergePSI.R -h
 ```
 
-## Call time course gene expression
+## AS type  
+SUPPA2
+```bash
+GTF="gtf_file"
+ABBR="species_abbreviation"
+suppa.py generateEvents \
+  -i ${GTF} -o \
+  ${ABBR} \
+  -f ioe \
+  -e SE SS MX RI FL
+```
+
+## Call time course expression  
+edgeR, maSigPro
 ```r
 ## R
 ## For example

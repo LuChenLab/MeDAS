@@ -1,5 +1,6 @@
 library(data.table)
 library(parallel)
+library(stringr)
 
 multi_merge <-
   function(path,

@@ -79,22 +79,12 @@ sum_foo_psi <-
             nonNAs <- which(!NAs)
             NAs_pct <- sum(NAs) / nrow(dat)
             if (NAs_pct > keep) {
-              res_kw <- 
-                tryCatch(
-                  kruskal.test(
-                    dat$PSI ~ dat[, col],
-                    na.action = "na.omit"),
-                  error = function(cond) {
-                    res <- list(p.value = NA)
-                    return(res)
-                  }
-                )
               res <- 
                 c(
                   NAs_pct,
                   NA, 
                   NA,
-                  res_kw$p.value)
+                  NA)
             } else {
               res_spearman <- 
                 cor.test(
